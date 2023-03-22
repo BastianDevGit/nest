@@ -1,6 +1,5 @@
-import { Category } from 'src/categories/entities/category.entity';
 import { GamesCategory } from 'src/games-categories/entities/games-category.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, JoinTable, JoinColumn, OneToOne, ManyToMany } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 
 
 @Entity('games')
@@ -24,20 +23,18 @@ export class Game {
     @Column('bool')
     promotion: boolean;
 
-    @OneToOne(
-        () => Category)
-    @JoinColumn()
-    category: Category
+    
     
     @OneToMany(
         ()=> GamesCategory,
-        (gamesCategory) => gamesCategory.id,
+        (gamesCategory) => gamesCategory.game,
         {cascade: true, eager: true}
     )
+    gamesCategory?: GamesCategory[];
 
-    @JoinTable()
-    @ManyToMany(() => GamesCategory)
-    gamesCategory: GamesCategory[];
+
+
+
 
 
 

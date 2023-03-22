@@ -11,7 +11,7 @@ export class Category {
 
     @OneToMany(
         ()=> GamesCategory,
-        (gamesCategory)=> gamesCategory.id,
+        (gamesCategory)=> gamesCategory.category,
         {cascade: true}
     )
     gamesCategory: GamesCategory;

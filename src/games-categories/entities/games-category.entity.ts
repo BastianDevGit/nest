@@ -10,15 +10,15 @@ export class GamesCategory {
 
     @ManyToOne(
         ()=> Category,
-        (categoryID) => categoryID.id,
+        (category) => category.id,
         {onDelete: 'CASCADE'}
     )
-    categoryID: Category;
+    category: Category;
 
     @ManyToOne(
         ()=> Game,
-        (gamesID) => gamesID.id,
+        (game) => game.id,
         {onDelete: 'CASCADE'}
     )
-    gamesID: Game;
+    game: Game;
 }
