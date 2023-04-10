@@ -1,49 +1,135 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Inject, Injectable, NotFoundException, Post } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Game } from './entities/game.entity';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Category } from 'src/categories/entities/category.entity';
-import { GamesCategory } from 'src/games-categories/entities/games-category.entity';
+import { GameCategory } from 'src/games-categories/entities/games-category.entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { CreateCategoryDto } from 'src/categories/dto/create-category.dto';
+import { CreateGamesCategoryDto } from 'src/games-categories/dto/create-games-category.dto';
+import { GamesCategoriesService } from 'src/games-categories/games-categories.service';
 
 @Injectable()
 export class GameService {
   constructor(
     @InjectRepository(Game)
     private readonly gameRepository: Repository<Game>,
-  ){}
 
-  create(createGameDto: CreateGameDto) {
-    return 'This action adds a new game';
+    @InjectRepository(GameCategory)
+    private readonly gamesCategoryRepository: Repository<GameCategory>,
+    
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+
+    @Inject(GamesCategoriesService)
+    private readonly gamesCategoriesService: GamesCategoriesService,
+
+    @InjectDataSource() private readonly dataSource: DataSource
+
+    ){}
+
+
+  async create(createGameDto: CreateGameDto) {
+
+    console.log(createGameDto);
+
+    // let game = new Game();
+
+    const {...gameCreate} = createGameDto
+
+    const games = this.gameRepository.create({
+      ...gameCreate
+    })
+
+    const gameSave = await this.gameRepository.save(games);
+
+    if ( !gameSave ) 
+      throw new NotFoundException('el juego no se puedo guardar');
+
+    let gameCategories = new GameCategory();
+    let category = new Category();
+
+    
+    for (let index = 0; index < createGameDto.categories.length; index++) {
+
+      category = await this.categoryRepository.findOneBy({id:createGameDto.categories[index]});
+
+      if(category) {
+        gameCategories.category = category;
+        gameCategories.game =  gameSave;
+
+        this.gamesCategoryRepository.save(gameCategories);
+      }
+      
+    }
+    return gameSave;
+    
   }
-
+  
+  
   async findAll(paginationDto: PaginationDto) {
     const{limit=10, offset=0} = paginationDto
     const games = await this.gameRepository.find({
       take: limit,
       skip: offset,
       relations: {
-        gamesCategory: true,
+        gamesCategories: true,
       }
     })
-    return games.map(({gamesCategory, ...rest}) =>({
+    return games.map(({gamesCategories, ...rest}) =>({
       ...rest,
-      gamesCategory: gamesCategory.map(gc=> gc.id),
+      gamesCategories: gamesCategories.map(gc=> gc.id),
     }))
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} game`;
+  async findOne(id: number) {
+
+    let game: Game;
+    game = await this.gameRepository.findOneBy({id});
+
+    if ( !game ) throw new NotFoundException('El juego no fue enconrado')
+
+    return game
   }
 
-  update(id: number, updateGameDto: UpdateGameDto) {
-    return `This action updates a #${id} game`;
+  async update(id: number, updateGameDto: UpdateGameDto) {
+
+    const {title, description, url, price, promotion, categories } = updateGameDto;
+
+    const game = await this.findOne(id);
+
+    if ( !game ) throw new NotFoundException('Juego no encontrado')
+
+    game.title = title;
+    game.description = description;
+    game.url = url;
+    game.price = price;
+    game.promotion = promotion;
+
+    let gamesCategory = [];
+
+    for (let index = 0; index < game.gamesCategories.length; index++) {
+      gamesCategory.push(this.gamesCategoriesService.updateGameCategory(game.gamesCategories[index].id, id));
+      
+    }
+
+
+    return this.gameRepository.save(game);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} game`;
+  async remove(id: number) {
+
+    const game = await this.gameRepository.findOneBy({id})
+
+    if ( !game ) throw new NotFoundException('Juego no encontrado')
+
+    this.gameRepository.remove(game)
+
+    
+
+    return `This action removes El juego con el #${id} ha sido eliminado correctamente`;
   }
 
 }

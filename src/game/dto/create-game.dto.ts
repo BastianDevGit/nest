@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsPositive, MinLength, IsBoolean } from "class-validator";
+import { IsString, IsNumber, IsOptional, IsPositive, MinLength, IsBoolean, IsArray } from "class-validator";
 
 
 export class CreateGameDto {
@@ -22,6 +22,14 @@ export class CreateGameDto {
 
     @IsBoolean()
     promotion: boolean;
+
+    @IsNumber()
+    @IsArray()
+    categories: number[];
+
+   
+
+
 
     
 }

@@ -16,7 +16,9 @@ export class CategoriesService {
     ){}
 
   async create(createCategoryDto: CreateCategoryDto) {
+
     const category = this.categoryRepository.create(createCategoryDto);
+
     await this.categoryRepository.save(category);
   
     return category
@@ -35,16 +37,27 @@ export class CategoriesService {
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    const {...toUpdate} = updateCategoryDto;
-    const category = await this.categoryRepository.preload({id, ...toUpdate});
-    if ( !category ) throw new NotFoundException('Categoria no encontrada')
+    const { name } = updateCategoryDto;
+
+    const category = await this.findOne(id);
+
+    if ( !category ) 
+      throw new NotFoundException('Categoria no encontrada');
+
+    category.name = name;
+
     return this.categoryRepository.save(category);
   }
      
   async remove(id: number) {
-    const category = await this.findOne(id)
+    const category = await this.findOne(id);
+
+    if ( !category ) 
+      throw new NotFoundException('Categoria no encontrada');
+
     await this.categoryRepository.remove(category);
-    return 'Categoria eliminada'
+
+    return 'Categoria eliminada';
   }
 
   private handleExeptions(err: any) {

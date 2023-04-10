@@ -3,7 +3,7 @@ import { Game } from 'src/game/entities/game.entity';
 import {Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('games_categories')
-export class GamesCategory {
+export class GameCategory {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,14 +11,18 @@ export class GamesCategory {
     @ManyToOne(
         ()=> Category,
         (category) => category.id,
-        {onDelete: 'CASCADE'}
+        {onDelete: 'CASCADE',
+         onUpdate: 'CASCADE'    
+        }
     )
     category: Category;
 
     @ManyToOne(
         ()=> Game,
-        (game) => game.id,
-        {onDelete: 'CASCADE'}
+        (game) => game.gamesCategories,
+        {onDelete: 'CASCADE',
+         onUpdate: 'CASCADE'
+        }
     )
     game: Game;
 }

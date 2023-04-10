@@ -1,4 +1,4 @@
-import { GamesCategory } from 'src/games-categories/entities/games-category.entity';
+import { GameCategory } from 'src/games-categories/entities/games-category.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 
 
@@ -23,14 +23,19 @@ export class Game {
     @Column('bool')
     promotion: boolean;
 
+    // @Column('int', {
+    //     array: true,
+    // })
+    // categories: number[];
+
     
     
     @OneToMany(
-        ()=> GamesCategory,
+        ()=> GameCategory,
         (gamesCategory) => gamesCategory.game,
         {cascade: true, eager: true}
     )
-    gamesCategory?: GamesCategory[];
+    gamesCategories?: GameCategory[];
 
 
 
