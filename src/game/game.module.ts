@@ -8,13 +8,17 @@ import { Category } from 'src/categories/entities/category.entity';
 import { GamesCategoriesService } from 'src/games-categories/games-categories.service';
 import { ConfigModule } from '@nestjs/config';
 
-
 @Module({
   controllers: [GameController],
   providers: [GameService, GamesCategoriesService],
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([Game, GameCategory, Category, GamesCategoriesService]),
+    TypeOrmModule.forFeature([
+      Game,
+      GameCategory,
+      Category,
+      GamesCategoriesService,
+    ]),
   ],
 })
 export class GameModule {}

@@ -1,35 +1,35 @@
-import { IsString, IsNumber, IsOptional, IsPositive, MinLength, IsBoolean, IsArray } from "class-validator";
-
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  MinLength,
+  IsBoolean,
+  IsArray,
+} from 'class-validator';
 
 export class CreateGameDto {
+  @IsString()
+  @MinLength(1)
+  title: string;
 
-    @IsString()
-    @MinLength(1)
-    title: string;
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  price?: number;
 
-    @IsNumber()
-    @IsPositive()
-    @IsOptional()
-    price?: number;
+  @IsString()
+  @MinLength(1)
+  url: string;
 
-    @IsString()
-    @MinLength(1)
-    url: string;
+  @IsString()
+  @IsOptional()
+  description?: string;
 
-    @IsString()
-    @IsOptional()
-    description?: string;
+  @IsBoolean()
+  promotion: boolean;
 
-    @IsBoolean()
-    promotion: boolean;
-
-    @IsNumber()
-    @IsArray()
-    categories: number[];
-
-   
-
-
-
-    
+  @IsNumber()
+  @IsArray()
+  categories: number[];
 }

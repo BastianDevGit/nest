@@ -15,41 +15,38 @@ export class GamesCategoriesService {
 
     @InjectRepository(GameCategory)
     private readonly gamesCategoryRepository: Repository<GameCategory>,
-    
+
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-
-    ){}
-
-  create(createGamesCategoryDto: CreateGamesCategoryDto) {
-    return 'This action adds a new gamesCategory';
-  }
-
-  findAll() {
-    return `This action returns all gamesCategories`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} gamesCategory`;
-  }
-
-  update(id: number, updateGamesCategoryDto: UpdateGamesCategoryDto) {
-    return `This action updates a #${id} gamesCategory`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} gamesCategory`;
-  }
+  ) {}
 
   async updateGameCategory(id: number, idNewCategory: number) {
-  
-    const gameCategory = await this.gamesCategoryRepository.findOneBy({id});
-    console.log(gameCategory)
-    if ( !gameCategory ) 
+    const gameCategory = await this.gamesCategoryRepository.findOneBy({ id });
+    console.log(gameCategory);
+    if (!gameCategory)
       throw new NotFoundException('No existe la categoria para el juego');
 
     gameCategory.category.id = idNewCategory;
 
     return gameCategory;
+  }
+
+  async createGameCategory(categories: number[], game: Game): Promise<void> {
+    let gameCategory = null;
+
+    for (let index = 0; index < categories.length; index++) {
+      const category = await this.categoryRepository.findOneBy({
+        id: categories[index],
+      });
+
+      if (category) {
+        gameCategory = {
+          category: category,
+          game: game,
+        };
+
+        await this.gamesCategoryRepository.save(gameCategory);
+      }
+    }
   }
 }

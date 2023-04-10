@@ -21,7 +21,6 @@ import { CategoriesModule } from './categories/categories.module';
     GameModule,
     GamesCategoriesModule,
     CategoriesModule,
-    
   ],
 })
 export class AppModule {}

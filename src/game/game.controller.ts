@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
@@ -14,7 +23,7 @@ export class GameController {
   }
 
   @Get()
-  findAll(@Query() paginationDto:PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.gameService.findAll(paginationDto);
   }
 

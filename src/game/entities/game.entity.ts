@@ -1,48 +1,34 @@
 import { GameCategory } from 'src/games-categories/entities/games-category.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-
-@Entity('games')
+@Entity({ name: 'games' })
 export class Game {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column('text')
+  title: string;
 
-    @Column('text')
-    title: string;
+  @Column('int')
+  price: number;
 
-    @Column('int')
-    price: number;
+  @Column('text')
+  url: string;
 
-    @Column('text')
-    url: string;
+  @Column('text')
+  description: string;
 
-    @Column('text')
-    description: string;
+  @Column('bool')
+  promotion: boolean;
 
-    @Column('bool')
-    promotion: boolean;
+  // @Column('int', {
+  //     array: true,
+  // })
+  // categories: number[];
 
-    // @Column('int', {
-    //     array: true,
-    // })
-    // categories: number[];
-
-    
-    
-    @OneToMany(
-        ()=> GameCategory,
-        (gamesCategory) => gamesCategory.game,
-        {cascade: true, eager: true}
-    )
-    gamesCategories?: GameCategory[];
-
-
-
-
-
-
-
-
-
+  @OneToMany(() => GameCategory, (gamesCategory) => gamesCategory.game, {
+    cascade: true,
+    eager: true,
+  })
+  gamesCategories?: GameCategory[];
 }
