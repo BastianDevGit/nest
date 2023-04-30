@@ -6,6 +6,7 @@ import { GamesCategoriesModule } from './games-categories/games-categories.modul
 import { CategoriesModule } from './categories/categories.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -25,6 +26,8 @@ import { AuthModule } from './auth/auth.module';
     CategoriesModule,
     FilesModule,
     AuthModule,
+    PassportModule,
+    
   ],
 })
 export class AppModule {}
